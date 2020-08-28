@@ -8,7 +8,7 @@ MAX_FPS = 15
 IMAGES = {}
 
 def loadImages():
-    pieces = ["bR", "bN", "bB", "bQ", "bK", "bp", "wp", "wR", "wN", "wB", "wQ", "wK"]
+    pieces = ["bV", "bA", "key"]
     for piece in pieces:
         IMAGES[piece] = p.transform.scale(p.image.load("images/{piece}.png".format(piece=piece)), (SQ_SIZE, SQ_SIZE))
 
