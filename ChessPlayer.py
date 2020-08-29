@@ -1,4 +1,3 @@
-import pygame as pygame
 
 POSSIBLE_MOVIMENT = 3
 class ChessPlayer():
@@ -53,7 +52,7 @@ class ChessPlayer():
         self.onBase = False
 
         if endPlay == "key_selected":
-            chessEngine.board[move[0]][move[1]] = "--"
+            chessEngine.board[move[0]][move[1]] = self.name
             self.keysOnPocket = self.keysOnPocket + 1
         elif move[0] != self.position[0]:
             startline = self.position[0] if self.position[0] < move[0] else move[0]
