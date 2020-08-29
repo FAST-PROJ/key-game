@@ -1,23 +1,53 @@
+from random import randrange
+
 class GameState():
-    def __init__(self):
+    def __init__(self, pyGame):
         self.board = [
-            ["bA", "bA", "bA", "bA", "bA", "bA", "bA", "bA", "bA", "bA"],
-            ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "key", "--", "--", "--", "--"],
-            ["--", "key", "--", "--", "--", "--", "--", "--", "key", "--"],
-            ["key", "--", "--", "key", "--", "--", "--", "--", "--", "key"],
-            ["--", "--", "--", "--", "--", "--", "key", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--"],
-            ["bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV"]]
+            ["bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV"],
+            ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"],
+            ["bA", "bA", "bA", "bA", "bA", "bA", "bA", "bA", "bA", "bA", "bA", "bA", "bA"]]
         self.whiteToMove = True
         self.moveLog = []
+        self.pyGame = pyGame
+        self.myFont = pyGame.font.SysFont('Comic Sans MS', 30)
+        self.__showKeys()
 
+    def __showKeys(self):
+        for line in range(3, 10):
+            column = randrange(len(self.board))
+            self.board[line][column] = "key"
 
-    def makeMove(self, move):
-        self.board[move.startRow][move.startCol] = "--"
-        self.board[move.endRow][move.endCol] = move.pieceMoved
-        self.moveLog.append(move)
-        self.whiteToMove = not self.whiteToMove
+    def endGame(self, player):
+        if player.keysSaved == 4:
+            textsurface = self.myFont.render('{name} ganhou!!!'.format(name=player.name), False, (0, 0, 0))
+            self.pyGame.screen.blit(textsurface, (0, 0))
+
+    def showMoviments(self, possiblePositions):
+        for position in possiblePositions:
+            piece = self.board[position[0]][position[1]]
+            if piece == "key":
+                self.board[position[0]][position[1]] = "key_selected"
+            elif piece != "bV" and piece != "bA":
+                self.board[position[0]][position[1]] = "PP"
+
+    def clearMoviments(self):
+        for line in range(len(self.board)):
+            for column in range(len(self.board[0])):
+                piece = self.board[line][column]
+                if piece == "PP":
+                    self.board[line][column] = "--"
+                elif piece == "key_selected":
+                    self.board[line][column] = "key"
 
 
 
