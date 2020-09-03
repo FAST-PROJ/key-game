@@ -169,5 +169,13 @@ if __name__ == "__main__":
                 const.PLAYER_ONE_PIECE
             )
         Bishop.possibleMovements(game.gameState.board, 6)
-    '''
 
+        Testando o movimento do cavalo
+        Knight = Player(
+            [0, 0],
+            pygame.Color(const.PLAYER_ONE_COLOR),
+            const.PLAYER_ONE_NAME,
+            const.PLAYER_ONE_PIECE
+        )
+        Knight.possibleMovements(game.gameState.board, 6)
+    '''

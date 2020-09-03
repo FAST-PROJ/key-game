@@ -1,5 +1,7 @@
 import constant as const
 
+from itertools import product
+
 class Player():
     def __init__(self, position, color, name, baseName):
         self.position = position
@@ -36,8 +38,7 @@ class Player():
         elif self.pieceInUse == const.BISHOP_PIECE: # Movimentos do bispo
             return self.__movementPossibleBishop(board)
         else:
-            # Movimentos do cavalo
-            pass
+            return self.__movementPossibleKnight(board) # Movimentos do cavalo
 
     '''
         Define as posições possíveis da torre no tabuleiro
@@ -55,6 +56,7 @@ class Player():
         Define as posições possíveis do bispo no tabuleiro
     '''
     def __movementPossibleBishop(self, board):
+        boardLenght = len(board) - 1
         directions = [[1,1],[-1,1],[-1,-1],[1,-1]]
         moves = []
 
@@ -66,11 +68,32 @@ class Player():
                 row = row + direction[0]
                 col = col + direction[1]
 
-                if (row > (len(board) - 1)):
+                if (row > boardLenght):
                     continue
 
                 if int(row) > 0 and int(col) > 0:
-                    moves.append([row,col])
+                    moves.append([row, col])
+        return moves
+
+    '''
+        Define as posições possíveis para o cavalo no tabuleiro
+    '''
+    def __movementPossibleKnight(self, board):
+        boardLenght = len(board) - 1
+        row = self.position[0]
+        col = self.position[1]
+
+        directions = [(-3, -1), (-3, +1), (+3, -1), (+3, +1), (-1, -3), (-1, +3), (+1, -3), (+1, +3)]
+        moves = []
+        for direction in directions:
+            x_row = row + direction[0]
+            y_col = col + direction[1]
+
+            if (x_row > boardLenght or y_col > boardLenght):
+                continue
+
+            if (x_row > 0 and y_col > 0):
+                moves.append([x_row, y_col])
 
         return moves
 
