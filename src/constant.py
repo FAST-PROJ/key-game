@@ -1,6 +1,22 @@
 # Board size
 WIDTH = HEIGHT = 640
 
+# Test Board
+#       0     1     2     3     4     5     6     7     8     9     10    11    12
+#0  - ["bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV"],
+#1  - ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"],
+#2  - ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"],
+#3  - ["--", "--", "--", "E", "--", "--", "--", "--", "--", "E", "--", "--", "--"],
+#4  - ["--", "--", "--", "--", "A", "--", "--", "--", "A", "--", "--", "--", "--"],
+#5  - ["--", "--", "--", "--", "--", "A", "--", "A", "--", "--", "--", "--", "--"],
+#6  - ["--", "--", "--", "--", "--", "--", "S", "--", "--", "--", "--", "--", "--"],
+#7  - ["--", "--", "--", "--", "--", "A", "--", "A", "--", "--", "--", "--", "--"],
+#8  - ["--", "--", "--", "--", "A", "--", "--", "--", "A", "--", "--", "--", "--"],
+#9  - ["--", "--", "--", "E", "--", "--", "--", "--", "--", "E", "--", "--", "--"],
+#10 - ["--", "--", "--", "--", "A", "--", "--", "--", "--", "--", "--", "--", "--"],
+#11 - ["--", "--", "--", "--", "--", "A", "--", "A", "--", "--", "--", "--", "--"],
+#12 - ["bA", "bA", "bA", "bA", "bA", "bA", "V", "bA", "bA", "bA", "bA", "bA", "bA"]
+
 # Board Map
 BOARD = [
             ["bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV", "bV"],
@@ -16,13 +32,10 @@ BOARD = [
             ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"],
             ["bA", "bA", "bA", "bA", "bA", "bA", "bA", "bA", "bA", "bA", "bA", "bA", "bA"]
-        ]
+    ]
 
 # Board colors
-WHITE = "white"
-GRAY_COLOR = (100, 100, 100)
-VIOLET_COLOR = (238, 130, 238)
-DARK_BROWN_COLOR = (139, 69, 0)
+BOARD_COLOR_WHITE = "white"
 
 # Player one constants
 PLAYER_ONE_COLOR = "red"
@@ -34,11 +47,21 @@ PLAYER_TWO_COLOR = "blue"
 PLAYER_TWO_NAME = "Player Azul"
 PLAYER_TWO_PIECE = "bA"
 
-
+# Movements | Board | Game Config
 HIGHLIGHT_MOVEMENT = "highlight_movement"
 MAX_FPS = 15
 IMAGES = {}
 KEY = "key"
 BLANK_SPACE = "--"
 IS_KEY_SELECTED = "key_selected"
+
+# Pieces names | Max pieces movements
+ROOK_PIECE = 'rook'
+ROOK_MAX_MOVEMENT = 3
+
+BISHOP_PIECE = 'bishop'
+BISHOP_MAX_MOVEMENT = 3
+
+KNIGHT_PIECE = 'knight'
+KNIGHT_MAX_MOVEMENT = 4
 

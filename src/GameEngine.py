@@ -23,11 +23,18 @@ class GameState():
 
     def showMovements(self, possiblePositions):
         for position in possiblePositions:
-            piece = self.board[position[0]][position[1]]
-            if piece == const.KEY:
-                self.board[position[0]][position[1]] = const.IS_KEY_SELECTED
-            elif piece != const.PLAYER_ONE_PIECE and piece != const.PLAYER_TWO_PIECE:
-                self.board[position[0]][position[1]] = const.HIGHLIGHT_MOVEMENT
+            try:
+                piece = self.board[position[0]][position[1]]
+                if piece == const.KEY:
+                    self.board[position[0]][position[1]] = const.IS_KEY_SELECTED
+                elif piece != const.PLAYER_ONE_PIECE and piece != const.PLAYER_TWO_PIECE:
+                    self.board[position[0]][position[1]] = const.HIGHLIGHT_MOVEMENT
+            except IndexError:
+                '''
+                    A posição a ser desenha está fora do tabuleiro
+                    Continua para a próxima iteração de posições
+                '''
+                continue
 
     def clearMovements(self):
         for line in range(len(self.board)):
@@ -40,27 +47,6 @@ class GameState():
 
     def isInsideBoard(self, x, y):
         return ((x < 0) or (x > len(self.board[0])) or (y < 0) or (y > len(self.board)))
-
-class Move():
-    ranksToRows = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
-    rowsToRanks = {v: k for k, v in ranksToRows.items()}
-    filesToCols = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7}
-    colsToFiles = {v: k for k, v in filesToCols.items()}
-
-    def __init__(self, startSq, endSq, board):
-        self.startRow = startSq[0]
-        self.startCol = startSq[1]
-        self.endRow = endSq[0]
-        self.endCol = endSq[1]
-        self.pieceMoved = board[self.startRow][self.startCol]
-        self.pieceCaptured = board[self.endRow][self.endCol]
-
-
-    def getChessNotation(self):
-        return self.getRankFile(self.startRow, self.startCol) + self.getRankFile(self.endRow, self.endCol)
-
-    def getRankFile(self, r, c):
-        return self.colsToFiles[c] + self.rowsToRanks[r]
 
 
 

@@ -9,7 +9,7 @@ class Main():
         pygame.font.init()
 
         self.screen = pygame.display.set_mode((const.WIDTH, const.HEIGHT))
-        self.screen.fill(pygame.Color(const.WHITE))
+        self.screen.fill(pygame.Color(const.BOARD_COLOR_WHITE))
         self.clock = pygame.time.Clock()
         self.gameState = GameEngine.GameState(pygame, self.screen)
         self.squareSize = const.HEIGHT // len(self.gameState.board)
@@ -65,7 +65,7 @@ class Main():
             const.PLAYER_ONE_NAME,
             const.PLAYER_ONE_PIECE
         )
-        self.playerOne.yourTurn = True
+        self.playerOne.yourTurn = False
 
         self.playerTwo = Player(
             [len(self.gameState.board)-1, 0],
@@ -73,7 +73,7 @@ class Main():
             const.PLAYER_TWO_NAME,
             const.PLAYER_TWO_PIECE
         )
-        self.playerTwo.yourTurn = False
+        self.playerTwo.yourTurn = True
 
     '''
         Load game images
@@ -160,4 +160,14 @@ class Main():
 if __name__ == "__main__":
     game = Main()
     game.init()
+    '''
+        Testando o movimento do bispo
+        Bishop = Player(
+                [len(game.gameState.board)-1, 0],
+                pygame.Color(const.PLAYER_ONE_COLOR),
+                const.PLAYER_ONE_NAME,
+                const.PLAYER_ONE_PIECE
+            )
+        Bishop.possibleMovements(game.gameState.board, 6)
+    '''
 

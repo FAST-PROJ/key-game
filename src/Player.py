@@ -1,7 +1,5 @@
 import constant as const
-from Bishop import Bishop
 
-POSSIBLE_MOVIMENT = 3
 class Player():
     def __init__(self, position, color, name, baseName):
         self.position = position
@@ -13,6 +11,7 @@ class Player():
         self.baseName = baseName
         self.keysLimit = 1
         self.onBase = True
+        self.pieceInUse = const.KNIGHT_PIECE
 
     '''
         Create the players pieces
@@ -23,24 +22,27 @@ class Player():
         if self.onBase:
             self.position = [self.position[0], column]
 
-        #faz um loop pelas posicoes permitidas verificando se a mesma pode ser feita
-        for line in range(self.position[0] - POSSIBLE_MOVIMENT, (self.position[0] + POSSIBLE_MOVIMENT) + 1):
-            for column in range(self.position[1] - POSSIBLE_MOVIMENT, (self.position[1] + POSSIBLE_MOVIMENT) + 1):
-                if self.__movementPossibleTower([line, column], board):
-                    possiblePositions.append([line, column])
-                else:
-                    continue
-
-                # Testando os movimentos do bispo
-                # moves = self.__movementPossibleBishop([line, column], board)
-                # possiblePositions.append(moves[0])
-
-        return possiblePositions
+        '''
+            Verifica as posições possíveis de uma peça no tabuleiro
+        '''
+        if self.pieceInUse == const.ROOK_PIECE: # Movimentos da torre
+            for line in range(self.position[0] - const.ROOK_MAX_MOVEMENT, (self.position[0] + const.ROOK_MAX_MOVEMENT) + 1):
+                for column in range(self.position[1] - const.ROOK_MAX_MOVEMENT, (self.position[1] + const.ROOK_MAX_MOVEMENT) + 1):
+                    if self.__movementPossibleRook([line, column], board):
+                        possiblePositions.append([line, column])
+                    else:
+                        continue
+            return possiblePositions
+        elif self.pieceInUse == const.BISHOP_PIECE: # Movimentos do bispo
+            return self.__movementPossibleBishop(board)
+        else:
+            # Movimentos do cavalo
+            pass
 
     '''
-        Create the players pieces
+        Define as posições possíveis da torre no tabuleiro
     '''
-    def __movementPossibleTower(self, move, board):
+    def __movementPossibleRook(self, move, board):
         if move[0] >= 0 and move[0] < len(board) and move[1] >= 0 and move[1] < len(board[0]):
             piece = board[move[0]][move[1]]
             if self.position[0] == move[0] or self.position[1] == move[1]:
@@ -50,15 +52,27 @@ class Player():
         return False
 
     '''
-        @todo bishop movements
+        Define as posições possíveis do bispo no tabuleiro
     '''
-    def __movementPossibleBishop(self, move, board):
-        B1 = Bishop(3, 3) #make one instance of the bishop class and initialize it at a position
-        B2 = Bishop(4, 6) #make a different instance of the bishop class
+    def __movementPossibleBishop(self, board):
+        directions = [[1,1],[-1,1],[-1,-1],[1,-1]]
+        moves = []
 
-        print("Current location if B1 - X: {} Y: {}".format(B1.x, B1.y))
-        print("Current location if B2 - X: {} Y: {}".format(B2.x, B2.y))
-        print(B1.getPossibleMoves())
+        for direction in directions:
+            row = self.position[0]
+            col = self.position[1]
+            for _ in range(const.BISHOP_MAX_MOVEMENT):
+
+                row = row + direction[0]
+                col = col + direction[1]
+
+                if (row > (len(board) - 1)):
+                    continue
+
+                if int(row) > 0 and int(col) > 0:
+                    moves.append([row,col])
+
+        return moves
 
     '''
         Create the players pieces
