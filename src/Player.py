@@ -1,5 +1,4 @@
 import constant as const
-
 from itertools import product
 
 class Player():
@@ -38,7 +37,7 @@ class Player():
         elif self.pieceInUse == const.BISHOP_PIECE: # Movimentos do bispo
             return self.__movementPossibleBishop(board)
         else:
-            return self.__movementPossibleKnight(board) # Movimentos do cavalo
+            return self.__movementPossibleBishop(board) # Movimentos do cavalo
 
     '''
         Define as posições possíveis da torre no tabuleiro

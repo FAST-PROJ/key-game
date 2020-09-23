@@ -1,5 +1,9 @@
 from random import randrange
+import pygame
 import constant as const
+from sys import exit
+import constant as const
+
 
 class GameState():
     def __init__(self, pyGame, screen):
@@ -18,8 +22,22 @@ class GameState():
 
     def endGame(self, player):
         if player.keysSaved == 4:
-            textsurface = self.myFont.render('{name} ganhou!!!'.format(name=player.name), False, (0, 0, 0))
-            self.screen.blit(textsurface, (0, 0))
+            imageGameOver = pygame.image.load("images/gameover.png")
+            self.screen.blit(imageGameOver, (0, 0))
+            textsurface = self.myFont.render('{name} ganhou!!!'.format(name=player.name), True, pygame.Color("black"))
+            self.screen.blit(textsurface, (const.WIDTH/4, 40))
+            pygame.display.flip() 
+            done = False
+            while not done:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        self.running = False
+                        done = True
+                        exit()
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_SPACE:
+                            done = True
+                            exit()
 
     def showMovements(self, possiblePositions):
         for position in possiblePositions:
