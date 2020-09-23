@@ -1,5 +1,10 @@
 # Board size
-WIDTH = HEIGHT = 640
+WIDTH = 640
+HEIGHT = 680
+WIDTH_BOARD = 640
+HEIGHT_BOARD = 640
+WIDTH_SCORE  = 640
+HEIGHT_SCORE = 49
 
 # Test Board
 #       0     1     2     3     4     5     6     7     8     9     10    11    12

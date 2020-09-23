@@ -1,17 +1,18 @@
 from random import randrange
 import pygame
-import constant as const
 from sys import exit
 import constant as const
 
 
 class GameState():
-    def __init__(self, pyGame, screen):
+    def __init__(self, pyGame, screen, surfaceBoard, surfaceScore):
         self.board = const.BOARD
         self.whiteToMove = True
         self.moveLog = []
         self.pyGame = pyGame
         self.screen = screen
+        self.surfaceBoard = surfaceBoard
+        self.surfaceScore = surfaceScore
         self.myFont = pyGame.font.SysFont('Comic Sans MS', 30)
         self.__showKeys()
 
@@ -34,10 +35,6 @@ class GameState():
                         self.running = False
                         done = True
                         exit()
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_SPACE:
-                            done = True
-                            exit()
 
     def showMovements(self, possiblePositions):
         for position in possiblePositions:
@@ -65,6 +62,7 @@ class GameState():
 
     def isInsideBoard(self, x, y):
         return ((x < 0) or (x > len(self.board[0])) or (y < 0) or (y > len(self.board)))
+
 
 
 
