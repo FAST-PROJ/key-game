@@ -2,6 +2,7 @@ import pygame
 import constant as const
 import GameEngine
 from Player import Player
+from sys import exit
 
 class Main():
     def __init__(self):
@@ -31,6 +32,7 @@ class Main():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                    exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     location = pygame.mouse.get_pos()
                     col = location[0] // self.squareSize
@@ -39,15 +41,18 @@ class Main():
                     if(col < len(self.gameState.board) and col >= 0 and row < len(self.gameState.board[0]) and row >= 0):
                         playerMove = self.playerOne if self.playerOne.yourTurn else self.playerTwo
 
+                        playerMove.x = location[1]
+                        playerMove.y = location[0]
+
                         if self.squareSelected == [row, col]:
                             self.squareSelected = []
                             self.gameState.clearMovements()
                         else:
                             self.squareSelected = [row, col]
-                        if self.squareSelected == playerMove.position or (row == playerMove.position[0] and playerMove.onBase):
-                            movementsPossibles = playerMove.possibleMovements(self.gameState.board, col)
                             self.gameState.clearMovements()
-                            self.gameState.showMovements(movementsPossibles)
+                        if self.squareSelected == playerMove.position or (row == playerMove.position[0] and playerMove.onBase):
+                            self.gameState.clearMovements()
+                            movementsPossibles = self.gameState.choosePiece(playerMove, col)
                         elif self.gameState.board[row][col] == const.HIGHLIGHT_MOVEMENT or self.gameState.board[row][col] == const.IS_KEY_SELECTED or self.gameState.board[row][col] == playerMove.baseName:
                             if [row, col] in movementsPossibles:
                                 nextPlayer = self.playerOne if playerMove != self.playerOne else self.playerTwo
@@ -100,7 +105,7 @@ class Main():
     '''
         Draw board and pieces
     '''
-    def __drawGameState(self, players):
+    def __drawGameState(self, players, ):
         self.__drawBoard(players)
         self.__drawPieces(players)
         self.__drawPoints(players)

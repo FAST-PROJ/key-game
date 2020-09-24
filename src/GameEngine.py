@@ -63,6 +63,39 @@ class GameState():
     def isInsideBoard(self, x, y):
         return ((x < 0) or (x > len(self.board[0])) or (y < 0) or (y > len(self.board)))
 
+    def choosePiece(self, playerMove, coluna):
+        imageGameOver = pygame.image.load("images/opcoes.png")
+        self.screen.blit(imageGameOver, (const.WIDTH_BOARD/1.67, 3))
+        pygame.display.flip() 
+        done = False
+        while not done:
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    location = pygame.mouse.get_pos()
+                    col = location[0] 
+                    row = location[1] 
+
+                    if(row >= 0 and row <= 49 and col >= 379):
+                        #cavalo
+                        if(col >= 379 and col <= 466):
+                            movementsPossibles = playerMove.possibleMovements(self.board, coluna, const.KNIGHT_PIECE)
+                            self.showMovements(movementsPossibles)  
+                        #torre
+                        elif(col >= 467 and col <= 554):        
+                            movementsPossibles = playerMove.possibleMovements(self.board, coluna, const.ROOK_PIECE)
+                            self.showMovements(movementsPossibles) 
+                        #bispo
+                        elif(col >= 555):
+                            movementsPossibles = playerMove.possibleMovements(self.board, coluna, const.BISHOP_PIECE)
+                            self.showMovements(movementsPossibles) 
+                        done = True
+                        return movementsPossibles
+                    else:
+                        return None
+
+                    
+
+
 
 
 

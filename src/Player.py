@@ -12,12 +12,11 @@ class Player():
         self.baseName = baseName
         self.keysLimit = 1
         self.onBase = True
-        self.pieceInUse = const.KNIGHT_PIECE
 
     '''
         Create the players pieces
     '''
-    def possibleMovements(self, board, column):
+    def possibleMovements(self, board, column, pieceInUse):
         possiblePositions = []
 
         if self.onBase:
@@ -26,7 +25,7 @@ class Player():
         '''
             Verifica as posições possíveis de uma peça no tabuleiro
         '''
-        if self.pieceInUse == const.ROOK_PIECE: # Movimentos da torre
+        if pieceInUse == const.ROOK_PIECE: # Movimentos da torre
             for line in range(self.position[0] - const.ROOK_MAX_MOVEMENT, (self.position[0] + const.ROOK_MAX_MOVEMENT) + 1):
                 for column in range(self.position[1] - const.ROOK_MAX_MOVEMENT, (self.position[1] + const.ROOK_MAX_MOVEMENT) + 1):
                     if self.__movementPossibleRook([line, column], board):
@@ -34,10 +33,10 @@ class Player():
                     else:
                         continue
             return possiblePositions
-        elif self.pieceInUse == const.BISHOP_PIECE: # Movimentos do bispo
+        elif pieceInUse == const.BISHOP_PIECE: # Movimentos do bispo
             return self.__movementPossibleBishop(board)
         else:
-            return self.__movementPossibleBishop(board) # Movimentos do cavalo
+            return self.__movementPossibleKnight(board) # Movimentos do cavalo
 
     '''
         Define as posições possíveis da torre no tabuleiro
