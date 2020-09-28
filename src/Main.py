@@ -49,7 +49,6 @@ class Main():
                             self.gameState.clearMovements()
                         else:
                             self.squareSelected = [row, col]
-                            self.gameState.clearMovements()
                         if self.squareSelected == playerMove.position or (row == playerMove.position[0] and playerMove.onBase):
                             self.gameState.clearMovements()
                             movementsPossibles = self.gameState.choosePiece(playerMove, col)
