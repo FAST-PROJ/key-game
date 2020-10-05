@@ -2,7 +2,7 @@ from random import randrange
 import pygame
 from sys import exit
 import constant as const
-
+import IAInputs
 
 class GameState():
     def __init__(self, pyGame, screen, surfaceBoard, surfaceScore):
@@ -93,6 +93,25 @@ class GameState():
                     else:
                         return None
 
+    def inputsIA(self, playerTurn, playerEnemy, board):
+        self.x = 0
+        self.y = 0
+
+        for row in range(len(board)):
+            for col in range(len(oard[0])):
+                piece = board[row][col]
+                if piece != const.BLANK_SPACE and piece != const.HIGHLIGHT_MOVEMENT:
+                    x = col
+                    y = row
+
+        return IAInputs(playerTurn.keysOnPocket > 0, y, x, playerEnemy.position[0], playerEnemy.position[1], playerTurn.position[0], playerTurn.position[1], playerTurn.onBase)            
+
+
+                 
+
+
+        
+        
                     
 
 
