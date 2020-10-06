@@ -1,13 +1,17 @@
 from random import randrange
+import pygame
+from sys import exit
 import constant as const
 
 class GameState():
-    def __init__(self, pyGame, screen):
+    def __init__(self, pyGame, screen, surfaceBoard, surfaceScore):
         self.board = const.BOARD
         self.whiteToMove = True
         self.moveLog = []
         self.pyGame = pyGame
         self.screen = screen
+        self.surfaceBoard = surfaceBoard
+        self.surfaceScore = surfaceScore
         self.myFont = pyGame.font.SysFont('Comic Sans MS', 30)
         self.listKeys = []
         self.__showKeys()
@@ -23,8 +27,18 @@ class GameState():
 
     def endGame(self, player):
         if player.keysSaved == 4:
-            textsurface = self.myFont.render('{name} ganhou!!!'.format(name=player.name), False, (0, 0, 0))
-            self.screen.blit(textsurface, (0, 0))
+            imageGameOver = pygame.image.load("images/gameover.png")
+            self.screen.blit(imageGameOver, (0, 0))
+            textsurface = self.myFont.render('{name} ganhou!!!'.format(name=player.name), True, pygame.Color("black"))
+            self.screen.blit(textsurface, (const.WIDTH/4, 40))
+            pygame.display.flip()
+            done = False
+            while not done:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        self.running = False
+                        done = True
+                        exit()
 
     def showMovements(self, possiblePositions):
         for position in possiblePositions:
@@ -52,6 +66,36 @@ class GameState():
 
     def isInsideBoard(self, x, y):
         return ((x < 0) or (x > len(self.board[0])) or (y < 0) or (y > len(self.board)))
+
+    def choosePiece(self, playerMove, coluna):
+        imageGameOver = pygame.image.load("images/opcoes.png")
+        self.screen.blit(imageGameOver, (const.WIDTH_BOARD/1.67, 3))
+        pygame.display.flip()
+        done = False
+        while not done:
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    location = pygame.mouse.get_pos()
+                    col = location[0]
+                    row = location[1]
+
+                    if(row >= 0 and row <= 49 and col >= 379):
+                        #cavalo
+                        if(col >= 379 and col <= 466):
+                            movementsPossibles = playerMove.possibleMovements(self.board, coluna, const.KNIGHT_PIECE)
+                            self.showMovements(movementsPossibles)
+                        #torre
+                        elif(col >= 467 and col <= 554):
+                            movementsPossibles = playerMove.possibleMovements(self.board, coluna, const.ROOK_PIECE)
+                            self.showMovements(movementsPossibles)
+                        #bispo
+                        elif(col >= 555):
+                            movementsPossibles = playerMove.possibleMovements(self.board, coluna, const.BISHOP_PIECE)
+                            self.showMovements(movementsPossibles)
+                        done = True
+                        return movementsPossibles
+                    else:
+                        return None
 
 
 

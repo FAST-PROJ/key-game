@@ -7,17 +7,22 @@ import GameEngine
 
 from IAPlay import IAPlay
 from Player import Player
+from sys import exit
 
 class Main():
     def __init__(self):
         pygame.init()
         pygame.font.init()
+        self.myFont = pygame.font.SysFont('Comic Sans MS', 15)
+        self.screen = pygame.display.set_mode((const.WIDTH, const.HEIGHT))
+        self.screenBoard = pygame.Surface((const.WIDTH_BOARD, const.HEIGHT_BOARD))
+        self.screenScore = pygame.Surface((const.WIDTH_SCORE, const.HEIGHT_SCORE))
 
         self.screen = pygame.display.set_mode((const.WIDTH, const.HEIGHT))
         self.screen.fill(pygame.Color(const.BOARD_COLOR_WHITE))
         self.clock = pygame.time.Clock()
-        self.gameState = GameEngine.GameState(pygame, self.screen)
-        self.squareSize = const.HEIGHT // len(self.gameState.board)
+        self.gameState = GameEngine.GameState(pygame, self.screen, self.screenBoard, self.screenScore)
+        self.squareSize = const.HEIGHT_BOARD // len(self.gameState.board)
         self.running = True
         self.squareSelected = []
         self.movementsPossibles = []
@@ -33,22 +38,27 @@ class Main():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                    exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     location = pygame.mouse.get_pos()
                     col = location[0] // self.squareSize
-                    row = location[1] // self.squareSize
-                    playerMove = self.playerOne if self.playerOne.yourTurn else self.playerTwo
+                    row = (location[1] // self.squareSize) - 1
 
-                    if self.squareSelected == [row, col]:
-                        self.squareSelected = []
-                        self.gameState.clearMovements()
-                    else:
-                        self.squareSelected = [row, col]
-                    if self.squareSelected == playerMove.position or (row == playerMove.position[0] and playerMove.onBase):
-                        movementsPossibles = playerMove.possibleMovements(self.gameState.board, col)
-                        self.gameState.clearMovements()
-                        self.gameState.showMovements(movementsPossibles)
-                    elif self.gameState.board[row][col] == const.HIGHLIGHT_MOVEMENT or self.gameState.board[row][col] == const.IS_KEY_SELECTED or self.gameState.board[row][col] == playerMove.baseName:
+                    if(col < len(self.gameState.board) and col >= 0 and row < len(self.gameState.board[0]) and row >= 0):
+                        playerMove = self.playerOne if self.playerOne.yourTurn else self.playerTwo
+
+                        playerMove.x = location[1]
+                        playerMove.y = location[0]
+
+                        if self.squareSelected == [row, col]:
+                            self.squareSelected = []
+                            self.gameState.clearMovements()
+                        else:
+                            self.squareSelected = [row, col]
+                        if self.squareSelected == playerMove.position or (row == playerMove.position[0] and playerMove.onBase):
+                            self.gameState.clearMovements()
+                            movementsPossibles = self.gameState.choosePiece(playerMove, col)
+                        elif self.gameState.board[row][col] == const.HIGHLIGHT_MOVEMENT or self.gameState.board[row][col] == const.IS_KEY_SELECTED or self.gameState.board[row][col] == playerMove.baseName:
                             if [row, col] in movementsPossibles:
                                 self.makeMove([row, col])
                                 movementsPossibles = []
@@ -122,11 +132,14 @@ class Main():
     def __drawGameState(self, players):
         self.__drawBoard(players)
         self.__drawPieces(players)
+        self.__drawPoints(players)
 
     '''
         Draw the board
     '''
     def __drawBoard(self, players):
+        self.screen.blit(self.screenScore, (0,0))
+        self.screen.blit(self.screenBoard, (0, const.HEIGHT_SCORE))
         colors = [pygame.Color("white"), pygame.Color("gray")]
         for row in range(len(self.gameState.board)):
             for col in range(len(self.gameState.board[0])):
@@ -140,19 +153,19 @@ class Main():
 
                 if playerToDraw != None:
                     pygame.draw.rect(
-                        self.screen,
+                        self.screenBoard,
                         playerToDraw.color,
                         pygame.Rect(col * self.squareSize, row * self.squareSize, self.squareSize, self.squareSize)
                     )
                 elif piece == const.HIGHLIGHT_MOVEMENT:
                     pygame.draw.rect(
-                        self.screen,
+                        self.screenBoard,
                         pygame.Color("orange"),
                         pygame.Rect(col * self.squareSize, row * self.squareSize, self.squareSize, self.squareSize)
                     )
                 else:
                     pygame.draw.rect(
-                        self.screen,
+                        self.screenBoard,
                         color,
                         pygame.Rect(col * self.squareSize, row * self.squareSize, self.squareSize, self.squareSize)
                     )
@@ -172,11 +185,20 @@ class Main():
 
                 if playerToDraw == None or piece == playerToDraw.baseName:
                     if piece != const.BLANK_SPACE and piece != const.HIGHLIGHT_MOVEMENT:
-                        self.screen.blit(
+                        self.screenBoard.blit(
                             const.IMAGES[piece],
                             pygame.Rect(col * self.squareSize, row * self.squareSize, self.squareSize, self.squareSize)
                         )
 
+    def __drawPoints(self, players):
+        textPoints = ""
+        heightPoints = 5
+
+        for player in players:
+            textPoints = "{jogador} - Chave no bolso {chave_bolso} x Chave na base {chave_base}".format(jogador=player.name, chave_bolso=player.keysOnPocket, chave_base=player.keysSaved)
+            textsurface = self.myFont.render(textPoints, True, pygame.Color("white"))
+            self.screen.blit(textsurface, (10, heightPoints))
+            heightPoints = (heightPoints + 20)
 
 '''
     Iniciando o jogo

@@ -1,5 +1,4 @@
 import constant as const
-
 from itertools import product
 
 class Player():
@@ -22,9 +21,9 @@ class Player():
     '''
     def possibleMovements(self, board, column, pieceInUse=const.KNIGHT_PIECE):
         possiblePositions = []
+
         if self.onBase:
             self.position = [self.position[0], column]
-
 
         '''
             Verifica as posições possíveis de uma peça no tabuleiro
