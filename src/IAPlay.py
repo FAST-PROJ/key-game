@@ -1,6 +1,10 @@
+from scipy import spatial
+import numpy as np
+
 import pprint
-import constant as const
 pp = pprint.PrettyPrinter(indent=1, width=160)
+
+import constant as const
 
 class Node():
     def __init__(self, parent=None, position=None):
@@ -35,37 +39,23 @@ class IAPlay():
                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
 
-        pp.pprint(f"localizacao das chaves {self.keyList}")
-
-
     '''
         IA procura o melhor movimento
     '''
     def makeMove(self):
         # test
-        # IAMoves = self.findBestMoveToBase(self.testBoard, [9, 9], [len(self.board) -1, 0])
-        # print(f" move to base {IAMoves}")
-
-        possibleMoves = [[[6, 8], [6, 10], [12, 8], [12, 10], [8, 6], [8, 12], [10, 6], [10, 12]], [[10, 10], [11, 11], [12, 12], [8, 10], [7, 11], [6, 12], [8, 8], [7, 7], [6, 6], [10, 8], [11, 7], [12, 6]], [[6, 9], [7, 9], [9, 6], [9, 7], [9, 8], [9, 10], [9, 11], [9, 12], [10, 9], [11, 9], [12, 9]]]
-
-        paths = [[(9, 9), (12, 8)]]
-
-        self.getIANearMovement(possibleMoves, paths, goal=(len(self.board) -1, self.player.position[1]))
-        return
-
-
-        print(f"chaves no bolso {self.player.keysOnPocket}")
-        # se tem chave no bolso busca um caminho para a base
-        if self.player.keysOnPocket > 0 :
+        if self.player.keysOnPocket > 0:
             IAMoves = self.findBestMoveToBase(self.testBoard, self.player.position, [len(self.board) -1, 0])
-            print(f" move to base {IAMoves}")
         else:
             IAMoves = self.findBestMove(self.testBoard, [len(self.board)-1, 0], self.keyList)
 
-
         paths = []
         for path in IAMoves:
-            paths.append([path['path'][0], path['path'][1]])
+            if type(path['path']) is list:
+                for movePath in path['path']:
+                    paths.append([movePath[0], movePath[1]])
+            else:
+                paths.append([path['path'][0], path['path'][1]])
 
         possibleMoves = []
         for piece in [const.KNIGHT_PIECE, const.BISHOP_PIECE, const.ROOK_PIECE]:
@@ -79,20 +69,16 @@ class IAPlay():
                 possibleMoves.append(moves)
                 self.gameState.showMovements(moves)
 
-
-        pp.pprint(f" possiveis movimentacoes IA - {possibleMoves}")
-
         foundMovement = self.getIABestMovement(possibleMoves, paths)
-        print(foundMovement)
 
         if foundMovement is None:
             foundMovement = self.getIANearMovement(possibleMoves, paths)
 
-        pp.pprint(f"melhor movimento encontrado {foundMovement}")
-
-        print(f"visitados {self.player.IAvisitedNodes}")
         return foundMovement
 
+    '''
+        Procura o melhor caminho para as chaves ou base
+    '''
     def findPathToKeys(self, board, base, keyLocation, pathToBase=False):
 
         # Cria o nó da base e o nó da localização da chave
@@ -131,17 +117,11 @@ class IAPlay():
                     path.append(current.position)
                     current = current.parent
 
-                pp.pprint(f"path {path}\n")
                 return path[::-1] # Retorna o caminho até a chave
 
             # Generate children
             children = []
-            for new_position in [(1,1), (-1,1), (-1,-1), (1,-1), (-3, -1), (-3, +1), (+3, -1), (+3, +1), (-1, -3), (-1, +3), (+1, -3), (+1, +3), (0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]: # Adjacent squares
-            # for new_position in [(-3, -1), (-3, +1), (+3, -1), (+3, +1), (-1, -3), (-1, +3), (+1, -3), (+1, +3)]: # Adjacent squares
-            # for new_position in [(1,1), (-1,1), (-1,-1), (1,-1)]: # Adjacent squares
-            # for new_position in [(1, 0)]: # Adjacent squares
-
-
+            for new_position in [(1,1), (-1,1), (-1,-1), (1,-1), (-3, -1), (-3, +1), (+3, -1), (+3, +1), (-1, -3), (-1, +3), (+1, -3), (+1, +3), (0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]: # Adjacent movement pieces
 
                 # Get node position
                 node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
@@ -181,6 +161,9 @@ class IAPlay():
                 # Add the child to the open list
                 open_list.append(child)
 
+    '''
+        Procura o melhor caminho ate as chaves
+    '''
     def findBestMove(self, board, base, keysLocation):
         base = (12, 6)
         IAMoves = [0, 0]
@@ -194,25 +177,22 @@ class IAPlay():
         IAMoves = sorted(paths, key = lambda i: i['len'])
         return IAMoves
 
+    '''
+        Procura o melhor caminho ate a base
+    '''
     def findBestMoveToBase(self, board, position, base):
         IAMoves = [0, 0]
-
         paths = []
-
-        print((position[0], position[1]))
-        print((base[0], position[1]))
-
-        # pos = (9, 9)
-        # base = (12, 9)
         pos = (position[0], position[1])
         base = (base[0], position[1])
-
         path = self.findPathToKeys(board, pos, base, pathToBase=True)
-
         paths.append({"path" : path, "len" : len(path)})
         IAMoves = sorted(paths, key = lambda i: i['len'])
         return IAMoves
 
+    '''
+        Retorna o melhor caminho ate a chave
+    '''
     def getIABestMovement(self, possibleMoves, paths):
         for pieceMoves in possibleMoves:
             for move in pieceMoves:
@@ -226,15 +206,14 @@ class IAPlay():
                     if abs(self.player.position[1] - move[1]) > const.ROOK_MAX_MOVEMENT:
                         continue
 
-                    pp.pprint(f"ia best move - {move}")
                     self.player.IAvisitedNodes.append(move)
                     return move
 
+    '''
+        Retorna o caminho mas proximo para a chave
+    '''
     def getIANearMovement(self, possibleMoves, paths, goal=None):
-
-        print(f"possibleMoves {possibleMoves}")
-        print(f"paths {paths}")
-        print(f"goal {goal}")
+        nearPaths = []
         for pieceMoves in possibleMoves:
             for move in pieceMoves:
                 if move in self.player.IAvisitedNodes:
@@ -243,9 +222,17 @@ class IAPlay():
                 if abs(self.player.position[0] - move[0]) > const.ROOK_MAX_MOVEMENT:
                     continue
 
-                if abs(self.player.position[1] - move[1]) > const.ROOK_MAX_MOVEMENT:
-                    continue
+                if not self.player.onBase:
+                    if abs(self.player.position[1] - move[1]) > const.ROOK_MAX_MOVEMENT:
+                        continue
 
-                pp.pprint(f"near move - {move}")
-                self.player.IAvisitedNodes.append(move)
-                return move
+                nearPaths.append(move)
+
+        if goal is None:
+            pointGoal = paths[0]
+        else:
+            pointGoal = [goal[0], goal[1]]
+
+        points = nearPaths[spatial.KDTree(nearPaths).query(pointGoal)[1]]
+        self.player.IAvisitedNodes.append(points)
+        return points
