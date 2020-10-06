@@ -1,7 +1,4 @@
 import pygame
-import pprint
-pp = pprint.PrettyPrinter(indent=1, width=160)
-
 import constant as const
 import GameEngine
 

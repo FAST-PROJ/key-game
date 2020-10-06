@@ -1,9 +1,5 @@
 from scipy import spatial
 import numpy as np
-
-import pprint
-pp = pprint.PrettyPrinter(indent=1, width=160)
-
 import constant as const
 
 class Node():
