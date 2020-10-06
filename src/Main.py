@@ -1,6 +1,11 @@
 import pygame
+import pprint
+pp = pprint.PrettyPrinter(indent=1, width=160)
+
 import constant as const
 import GameEngine
+
+from IAPlay import IAPlay
 from Player import Player
 
 class Main():
@@ -44,16 +49,35 @@ class Main():
                         self.gameState.clearMovements()
                         self.gameState.showMovements(movementsPossibles)
                     elif self.gameState.board[row][col] == const.HIGHLIGHT_MOVEMENT or self.gameState.board[row][col] == const.IS_KEY_SELECTED or self.gameState.board[row][col] == playerMove.baseName:
-                        if [row, col] in movementsPossibles:
-                            nextPlayer = self.playerOne if playerMove != self.playerOne else self.playerTwo
-                            playerMove.makeMove([row, col], self.gameState, nextPlayer)
-                            nextPlayer.yourTurn = True
-                            self.gameState.clearMovements()
-                            movementsPossibles = []
+                            if [row, col] in movementsPossibles:
+                                self.makeMove([row, col])
+                                movementsPossibles = []
+
+                # IA Parts
+                elif self.playerTwo.yourTurn:
+                    ia = IAPlay(
+                        self.gameState,
+                        self.playerTwo,
+                        self.gameState.board,
+                        game.gameState.getKeyList()
+                    )
+                    movement = ia.makeMove()
+                    self.playerTwo.yourTurn = False
+                    self.makeMove(movement)
 
             self.__drawGameState([self.playerOne, self.playerTwo])
             self.clock.tick(const.MAX_FPS)
             pygame.display.flip()
+
+    '''
+        Move a peça no tabuleiro
+    '''
+    def makeMove(self, movement):
+        playerMove = self.playerOne if self.playerOne.yourTurn else self.playerTwo
+        nextPlayer = self.playerOne if playerMove != self.playerOne else self.playerTwo
+        nextPlayer.yourTurn = True
+        playerMove.makeMove(movement, self.gameState, nextPlayer)
+        self.gameState.clearMovements()
 
     '''
         Create the players pieces
@@ -65,7 +89,7 @@ class Main():
             const.PLAYER_ONE_NAME,
             const.PLAYER_ONE_PIECE
         )
-        self.playerOne.yourTurn = False
+        self.playerOne.yourTurn = True
 
         self.playerTwo = Player(
             [len(self.gameState.board)-1, 0],
@@ -73,7 +97,7 @@ class Main():
             const.PLAYER_TWO_NAME,
             const.PLAYER_TWO_PIECE
         )
-        self.playerTwo.yourTurn = True
+        self.playerTwo.yourTurn = False
 
     '''
         Load game images

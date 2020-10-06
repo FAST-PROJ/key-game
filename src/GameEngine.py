@@ -9,12 +9,19 @@ class GameState():
         self.pyGame = pyGame
         self.screen = screen
         self.myFont = pyGame.font.SysFont('Comic Sans MS', 30)
+
+        self.listKeys = []
+
         self.__showKeys()
 
     def __showKeys(self):
         for line in range(3, 10):
             column = randrange(len(self.board))
             self.board[line][column] = const.KEY
+            self.listKeys.append([line, column])
+
+    def getKeyList(self):
+        return self.listKeys
 
     def endGame(self, player):
         if player.keysSaved == 4:
