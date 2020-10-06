@@ -145,11 +145,7 @@ class Player():
         if [move[0], move[1]] in chessEngine.getKeyList():
             self.keysOnPocket = self.keysOnPocket + 1
             chessEngine.getKeyList().remove([move[0], move[1]])
-
-        if endPlay == const.IS_KEY_SELECTED:
             chessEngine.board[move[0]][move[1]] = self.name
-            self.keysOnPocket = self.keysOnPocket + 1
-
         elif move[0] != self.position[0]:
             startline = self.position[0] if self.position[0] < move[0] else move[0]
             endLine = move[0] if move[0] > self.position[0] else self.position[0]
