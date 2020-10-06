@@ -184,6 +184,7 @@ class Main():
 if __name__ == "__main__":
     game = Main()
     game.init()
+
     '''
         Testando o movimento do bispo
         Bishop = Player(

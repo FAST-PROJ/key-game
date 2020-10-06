@@ -9,9 +9,7 @@ class GameState():
         self.pyGame = pyGame
         self.screen = screen
         self.myFont = pyGame.font.SysFont('Comic Sans MS', 30)
-
         self.listKeys = []
-
         self.__showKeys()
 
     def __showKeys(self):
