@@ -2,7 +2,6 @@ from random import randrange
 import pygame
 from sys import exit
 import constant as const
-import IAInputs
 
 class GameState():
     def __init__(self, pyGame, screen, surfaceBoard, surfaceScore):
@@ -14,12 +13,17 @@ class GameState():
         self.surfaceBoard = surfaceBoard
         self.surfaceScore = surfaceScore
         self.myFont = pyGame.font.SysFont('Comic Sans MS', 30)
+        self.listKeys = []
         self.__showKeys()
 
     def __showKeys(self):
         for line in range(3, 10):
             column = randrange(len(self.board))
             self.board[line][column] = const.KEY
+            self.listKeys.append([line, column])
+
+    def getKeyList(self):
+        return self.listKeys
 
     def endGame(self, player):
         if player.keysSaved == 4:
@@ -27,7 +31,7 @@ class GameState():
             self.screen.blit(imageGameOver, (0, 0))
             textsurface = self.myFont.render('{name} ganhou!!!'.format(name=player.name), True, pygame.Color("black"))
             self.screen.blit(textsurface, (const.WIDTH/4, 40))
-            pygame.display.flip() 
+            pygame.display.flip()
             done = False
             while not done:
                 for event in pygame.event.get():
@@ -66,50 +70,32 @@ class GameState():
     def choosePiece(self, playerMove, coluna):
         imageGameOver = pygame.image.load("images/opcoes.png")
         self.screen.blit(imageGameOver, (const.WIDTH_BOARD/1.67, 3))
-        pygame.display.flip() 
+        pygame.display.flip()
         done = False
         while not done:
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     location = pygame.mouse.get_pos()
-                    col = location[0] 
-                    row = location[1] 
+                    col = location[0]
+                    row = location[1]
 
                     if(row >= 0 and row <= 49 and col >= 379):
                         #cavalo
                         if(col >= 379 and col <= 466):
                             movementsPossibles = playerMove.possibleMovements(self.board, coluna, const.KNIGHT_PIECE)
-                            self.showMovements(movementsPossibles)  
+                            self.showMovements(movementsPossibles)
                         #torre
-                        elif(col >= 467 and col <= 554):        
+                        elif(col >= 467 and col <= 554):
                             movementsPossibles = playerMove.possibleMovements(self.board, coluna, const.ROOK_PIECE)
-                            self.showMovements(movementsPossibles) 
+                            self.showMovements(movementsPossibles)
                         #bispo
                         elif(col >= 555):
                             movementsPossibles = playerMove.possibleMovements(self.board, coluna, const.BISHOP_PIECE)
-                            self.showMovements(movementsPossibles) 
+                            self.showMovements(movementsPossibles)
                         done = True
                         return movementsPossibles
                     else:
                         return None
-
-    def inputsIA(self, playerTurn, playerEnemy, board):
-        for row in range(len(board), 0, -1):
-            for col in range(len(board[0]), 0, -1):
-                piece = board[row][col]
-                if piece != const.BLANK_SPACE and piece != const.HIGHLIGHT_MOVEMENT:
-                    return IAInputs(playerTurn.keysOnPocket > 0, row, col, playerEnemy.position[0], playerEnemy.position[1], playerTurn.position[0], playerTurn.position[1], playerTurn.onBase)            
-                    
-
-
-                 
-
-
-        
-        
-                    
-
-
 
 
 

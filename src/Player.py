@@ -12,11 +12,14 @@ class Player():
         self.baseName = baseName
         self.keysLimit = 1
         self.onBase = True
+        self.pieceInUse = const.KNIGHT_PIECE
+        self.IAvisitedNodes = []
+
 
     '''
         Create the players pieces
     '''
-    def possibleMovements(self, board, column, pieceInUse):
+    def possibleMovements(self, board, column, pieceInUse=const.KNIGHT_PIECE):
         possiblePositions = []
 
         if self.onBase:
@@ -135,9 +138,18 @@ class Player():
         #seta que saimos da base
         self.onBase = False
 
+        '''
+            Verificando se uma chave foi pega no movimento
+            Se pegou a chave incrementa as chaves no bolso e remove a chave da lista de chaves
+        '''
+        if [move[0], move[1]] in chessEngine.getKeyList():
+            self.keysOnPocket = self.keysOnPocket + 1
+            chessEngine.getKeyList().remove([move[0], move[1]])
+
         if endPlay == const.IS_KEY_SELECTED:
             chessEngine.board[move[0]][move[1]] = self.name
             self.keysOnPocket = self.keysOnPocket + 1
+
         elif move[0] != self.position[0]:
             startline = self.position[0] if self.position[0] < move[0] else move[0]
             endLine = move[0] if move[0] > self.position[0] else self.position[0]
